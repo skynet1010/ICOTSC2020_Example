@@ -1,0 +1,2 @@
+FROM ubuntu:bionic-20200630
+COPY . /ICoTSC2020
