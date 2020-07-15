@@ -12,8 +12,14 @@ class TestSession:
         self.name = name
         self.resample_window = resample_window
         self.data_preprocessor = data_preprocessor
-
+        
+        gpu_options = tf.GPUOptions(allow_growth=True)
+        self.config = tf.ConfigProto(gpu_options=gpu_options)
+        
     def run_test(self, test_definition):
+        sess = tf.compat.v1.Session(config=self.config)
+        tf.keras.backend.set_session(sess)
+
         test_x_scaled, test_y_scaled, y_scaler = self.data_preprocessor.get_data_from_generator(self, test_definition, self.resample_window)
         model, model_summary, checkpoint_path = ModelBuilder().get_model(test_session=self, test_definition=test_definition, num_input_cols=test_x_scaled.shape[2], metrics=[ModelBuilder.root_mean_squared_error])
         print(model_summary)
